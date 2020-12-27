@@ -5,10 +5,13 @@ $small-size: $big-size / 3;
 $border-color: #ccd0d4;
 $border-color-focus: darken($border-color, 10%);
 
+$background-color: #ffffff6b;
+
 .input {
   border-radius: 0;
   border: 1px solid #ccd0d4;
   padding: $normal-size;
+  background-color: $background-color;
 
   &--big {
     padding: $big-size;

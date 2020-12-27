@@ -12,7 +12,7 @@
       @input="onChangeValue"
       :value="value"
       :min="minValue"
-      class="input input__number field-counter__input"
+      class="input input--small input__number field-counter__input"
     />
     <div
       class="field-counter__action field-counter__increment"
