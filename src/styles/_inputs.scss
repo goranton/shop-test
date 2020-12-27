@@ -1,0 +1,29 @@
+$big-size: 15px;
+$normal-size: $big-size / 2;
+$small-size: $big-size / 3;
+
+$border-color: #ccd0d4;
+$border-color-focus: darken($border-color, 10%);
+
+.input {
+  border-radius: 0;
+  border: 1px solid #ccd0d4;
+  padding: $normal-size;
+
+  &--big {
+    padding: $big-size;
+  }
+
+  &--small {
+    padding: $small-size;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $border-color-focus;
+  }
+
+  &__number {
+    text-align: center;
+  }
+}

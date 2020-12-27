@@ -1,32 +1,31 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <field-counter v-model="counter" />
+    <grid :items="[1, 2, 3, 4, 5]">
+      <template v-slot:columns="{ columns }">
+        <grid-column v-for="{ id, items } in columns" :key="id">
+          {{ items }}
+        </grid-column>
+      </template>
+    </grid>
     <router-view />
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+@import "styles/global";
 </style>
+
+<script>
+import Grid from "./components/grid";
+import GridColumn from "./components/grid-column";
+import FieldCounter from "./components/field-counter";
+export default {
+  components: { FieldCounter, GridColumn, Grid },
+  data() {
+    return {
+      counter: 1
+    };
+  }
+};
+</script>

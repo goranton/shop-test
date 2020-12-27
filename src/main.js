@@ -1,12 +1,11 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
+import { initApplication } from "./core/application";
+import { goods, basket } from "./modules";
+import storeConfig from "./store";
 
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount("#app");
+initApplication({
+  modules: [goods, basket],
+  storeConfig,
+  onLoad: vueInstance => {
+    vueInstance.$mount("#app");
+  }
+});
