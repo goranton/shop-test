@@ -1,10 +1,14 @@
 <template>
-  <div>saf</div>
+  <div>
+    <grid items=""></grid>
+  </div>
 </template>
 
 <script>
+import Grid from "../../../components/grid";
 export default {
-  name: "GoodsIndexPage"
+  name: "GoodsIndexPage",
+  components: { Grid }
 };
 </script>
 
