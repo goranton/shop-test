@@ -52,8 +52,6 @@ $content-background: #487eb0;
 
 .block-expansion {
   width: 100%;
-  height: 100%;
-  max-width: 300px;
 
   &__header,
   &__content {
