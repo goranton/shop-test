@@ -9,15 +9,17 @@
         true-symbol="Close"
       />
     </div>
-    <div
-      class="block-expansion__content"
-      :class="{
-        'block-expansion__content--active': isExpanded
-      }"
-      v-show="isExpanded"
-    >
-      <slot v-bind="{ isExpanded }" />
-    </div>
+    <transition name="slide">
+      <div
+        class="block-expansion__content"
+        :class="{
+          'block-expansion__content--active': isExpanded
+        }"
+        v-if="isExpanded"
+      >
+        <slot v-bind="{ isExpanded }" />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -39,6 +41,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/keyframes";
+
 $header-background: #40739e;
 $header-color: darken($header-background, 40%);
 $header-btn-background: lighten($header-background, 10%);
