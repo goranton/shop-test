@@ -54,7 +54,7 @@ export async function getStoreConfigurationForModule({ name, store }) {
     name,
     {
       namespaced: true,
-      ...(await store)?.default
+      ...(await store())?.default
     }
   ];
 }
@@ -70,6 +70,5 @@ export function getStoreConfigurationForModules(modules) {
       storeModules.push(getStoreConfigurationForModule(module));
     });
   }
-
   return storeModules;
 }
