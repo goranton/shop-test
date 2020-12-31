@@ -6,6 +6,7 @@ import { getRouterInstance } from "./router";
 import Vue from "vue";
 import App from "../App";
 import { getStoreInstance } from "./store";
+import { DEVELOPMENT } from "../constants/environments";
 
 /**
  * @callback onLoadCallback
@@ -26,13 +27,15 @@ import { getStoreInstance } from "./store";
  * @param {Array} routes - routes stack
  * @param {Object} storeConfig
  * @param modules
+ * @param {String} environment
  */
 export function initApplication({
   onLoad,
   modules = [],
   routes = [],
   storeConfig = {},
-  onError = console.error
+  onError = console.error,
+  environment = process.env.NODE_ENV ?? DEVELOPMENT
 }) {
   const router = getRouterInstance();
   router.addRoutes([...routes, ...getRoutesStackForModules(modules)]);
@@ -50,7 +53,7 @@ export function initApplication({
 
       if (typeof onLoad === "function") {
         onLoad.call(
-          null,
+          { environment },
           new Vue({
             router,
             store,
