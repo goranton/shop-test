@@ -1,10 +1,22 @@
+import uuidGenerator from "short-uuid";
+
 export class MessageBus {
   static SUCCESS_TYPE = Symbol("success");
   static WARNING_TYPE = Symbol("warning");
   static ERROR_TYPE = Symbol("error");
 
+  static UNION_TYPES = [
+    MessageBus.SUCCESS_TYPE,
+    MessageBus.WARNING_TYPE,
+    MessageBus.ERROR_TYPE
+  ];
+
   constructor() {
     this.subscribers = [];
+  }
+
+  static validateMessage(message) {
+    return "id" in message && "type" in message && "payload" in message;
   }
 
   subscribe(subscriber) {
@@ -25,7 +37,13 @@ export class MessageBus {
   }
 
   notify(type, payload) {
-    this.subscribers.forEach(subscriber => subscriber.call(null, payload));
+    this.subscribers.forEach(subscriber =>
+      subscriber.call(null, {
+        id: uuidGenerator.generate(),
+        type,
+        payload
+      })
+    );
   }
 
   success(payload) {
