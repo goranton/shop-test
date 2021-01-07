@@ -43,12 +43,12 @@ export default {
 <style lang="scss" scoped>
 @import "../styles/keyframes";
 
-$header-background: #40739e;
+$header-background: #95a5a6;
 $header-color: darken($header-background, 40%);
 $header-btn-background: lighten($header-background, 10%);
 $header-btn-color: darken($header-btn-background, 40%);
 
-$content-background: #487eb0;
+$content-background: #7f8c8d;
 
 .block-expansion {
   width: 100%;
@@ -66,7 +66,6 @@ $content-background: #487eb0;
     color: $header-color;
     background-color: $header-background;
     padding: 10px;
-    border-radius: 5px 5px 0 0;
   }
 
   &__content {
