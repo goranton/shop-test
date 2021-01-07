@@ -40,7 +40,7 @@ export default {
     },
     getItems: {
       type: Function,
-      default: () => () => {}
+      default: () => () => []
     }
   },
   name: "GroupsGrid",
