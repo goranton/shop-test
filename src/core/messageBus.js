@@ -6,12 +6,33 @@ export const ERROR = Symbol("error");
 
 export const MESSAGE_TYPES = [SUCCESS, WARNING, ERROR];
 
-function validateListener(listener, cb) {
+export function validateListener(listener, cb) {
   return typeof listener === "function" && cb(listener);
 }
 
-function validateType(type) {
+export function validateType(type) {
   return MESSAGE_TYPES.includes(type);
+}
+
+export function successSkeleton(payload) {
+  return {
+    type: SUCCESS,
+    payload
+  };
+}
+
+export function warningSkeleton(payload) {
+  return {
+    type: WARNING,
+    payload
+  };
+}
+
+export function errorSkeleton(payload) {
+  return {
+    type: ERROR,
+    payload
+  };
 }
 
 export default () => {
@@ -41,6 +62,7 @@ export default () => {
       validateType(type) &&
       notify({
         id: uuidGenerator.generate(),
+        type,
         payload
       })
   ];

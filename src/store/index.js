@@ -1,3 +1,5 @@
+export const CONSTANTS = {};
+
 export default {
   state() {
     return {
@@ -12,7 +14,8 @@ export default {
           label: "Корзина",
           routeName: "basket"
         }
-      ]
+      ],
+      messages: []
     };
   }
 };
