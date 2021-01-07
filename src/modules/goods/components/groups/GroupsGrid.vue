@@ -16,6 +16,7 @@
                   :key="item.id"
                   :title="item.name"
                   :price="item.price"
+                  @click.native="() => pushToBasket(item.id, item.count)"
                 />
               </goods-inline-list>
             </template>
@@ -44,7 +45,12 @@ export default {
     }
   },
   name: "GroupsGrid",
-  components: { GoodInline, GoodsInlineList, BlockExpansion, GridColumn, Grid }
+  components: { GoodInline, GoodsInlineList, BlockExpansion, GridColumn, Grid },
+  methods: {
+    pushToBasket(id, total) {
+      this.$emit("push-basket", { id, total });
+    }
+  }
 };
 </script>
 

@@ -7,5 +7,6 @@ export default {
   layout: Base,
   routes,
   baseComponent: () =>
-    import(/* webpackChunkName: 'basketBase' */ "./Basket.vue")
+    import(/* webpackChunkName: 'basketBase' */ "./Basket.vue"),
+  store: () => import(/* webpackChunkName: 'basketStore' */ "./store")
 };
