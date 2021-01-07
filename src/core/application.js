@@ -7,7 +7,7 @@ import Vue from "vue";
 import App from "../App";
 import { getStoreInstance } from "./store";
 import { DEVELOPMENT } from "../constants/environments";
-import { MessageBus } from "./messageBus";
+import messageBus from "./messageBus";
 
 /**
  * @callback onLoadCallback
@@ -38,7 +38,7 @@ export function initApplication({
   onError = console.error,
   environment = process.env.NODE_ENV ?? DEVELOPMENT
 }) {
-  Vue.prototype.$message = new MessageBus();
+  Vue.prototype.$message = messageBus();
 
   const router = getRouterInstance();
   router.addRoutes([...routes, ...getRoutesStackForModules(modules)]);

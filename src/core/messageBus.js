@@ -1,60 +1,47 @@
 import uuidGenerator from "short-uuid";
 
-export class MessageBus {
-  static SUCCESS_TYPE = Symbol("success");
-  static WARNING_TYPE = Symbol("warning");
-  static ERROR_TYPE = Symbol("error");
+export const SUCCESS = Symbol("success");
+export const WARNING = Symbol("warning");
+export const ERROR = Symbol("error");
 
-  static UNION_TYPES = [
-    MessageBus.SUCCESS_TYPE,
-    MessageBus.WARNING_TYPE,
-    MessageBus.ERROR_TYPE
-  ];
+export const MESSAGE_TYPES = [SUCCESS, WARNING, ERROR];
 
-  constructor() {
-    this.subscribers = [];
-  }
+function validateListener(listener, cb) {
+  return typeof listener === "function" && cb(listener);
+}
 
-  static validateMessage(message) {
-    return "id" in message && "type" in message && "payload" in message;
-  }
+function validateType(type) {
+  return MESSAGE_TYPES.includes(type);
+}
 
-  subscribe(subscriber) {
-    if (typeof subscriber !== "function") {
-      throw new TypeError(
-        `Subscribe callback must be a function. ${typeof subscriber} given`
-      );
-    }
+export default () => {
+  const listeners = [];
 
-    this.subscribers.push(subscriber);
-  }
+  const notify = payload => listeners.forEach(listener => listener(payload));
 
-  unsubscribe(subscriber) {
-    const foundIndex = this.subscribers.findIndex(
-      callback => callback === subscriber
-    );
-    this.subscribers.splice(foundIndex, 1);
-  }
-
-  notify(type, payload) {
-    this.subscribers.forEach(subscriber =>
-      subscriber.call(null, {
+  return [
+    {
+      add: listener => validateListener(listener, listeners.push.bind(this)),
+      remove: listener =>
+        validateListener(listener, () => {
+          const foundIndex = listeners.indexOf(listener);
+          foundIndex > -1 && listeners.splice(foundIndex, 1);
+        }),
+      removeAll() {
+        listeners.forEach(this.remove);
+      }
+    },
+    /**
+     * Validate and notify
+     * @param type
+     * @param payload
+     * @return {boolean|void}
+     */
+    ({ type, payload }) =>
+      validateType(type) &&
+      notify({
         id: uuidGenerator.generate(),
-        type,
         payload
       })
-    );
-  }
-
-  success(payload) {
-    this.notify(MessageBus.SUCCESS_TYPE, payload);
-  }
-
-  warning(payload) {
-    this.notify(MessageBus.WARNING_TYPE, payload);
-  }
-
-  error(payload) {
-    this.notify(MessageBus.ERROR_TYPE, payload);
-  }
-}
+  ];
+};

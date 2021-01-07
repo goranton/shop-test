@@ -42,9 +42,11 @@ export function getRoutesStackForModules(modules) {
 
   const stack = [];
 
-  modules.forEach(module => {
-    stack.push(getRoutesStackForModule(module));
-  });
+  modules
+    .filter(({ isStatic }) => !isStatic)
+    .forEach(module => {
+      stack.push(getRoutesStackForModule(module));
+    });
 
   return stack;
 }
