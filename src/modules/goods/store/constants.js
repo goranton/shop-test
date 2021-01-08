@@ -15,5 +15,6 @@ export const MUTATIONS = {
 
 export const GETTERS = {
   GET_GROUPS: `${PREFIX} get groups list`,
-  GET_ITEMS_FOR_GROUP: `${PREFIX} get items for group`
+  GET_ITEMS_FOR_GROUP: `${PREFIX} get items for group`,
+  GET_ITEMS_BY_ID: `${PREFIX} get items by id`
 };

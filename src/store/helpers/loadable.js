@@ -27,3 +27,15 @@ export function loadFailed(error) {
     error
   };
 }
+
+export function isLoadedSuccess(item) {
+  return item.status === SUCCESS_STATUS;
+}
+
+export function getLoadData(item, defaultValue = null) {
+  if (isLoadedSuccess(item)) {
+    return item.data;
+  }
+
+  return defaultValue;
+}
