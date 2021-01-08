@@ -4,43 +4,22 @@
       <h1>Basket</h1>
     </header>
     <div class="basket__wrapper">
-      <div
-        class="basket-item"
+      <basket-item
         v-for="{
           id,
           count,
           data: { name, price, count: total }
         } in itemsWithData"
         :key="id"
-      >
-        <div class="basket-item__remove" @click="removeItem({ goodId: id })">
-          x
-        </div>
-        <div class="basket-item__name">{{ name }}</div>
-        <div class="basket-item__price">{{ price }}</div>
-        <div class="basket-item__full">{{ count * price }}</div>
-        <div class="basket-item__count">
-          <label :for="`count${id}`">Кол-во товара</label>
-          <input
-            :id="`count${id}`"
-            type="number"
-            :min="0"
-            :max="total"
-            :value="count"
-            @input="e => updateCounter(e, id, total)"
-          />
-          <button
-            name="changeCount"
-            @click="() => updateItem(id, total, count)"
-          >
-            Изменить
-          </button>
-        </div>
-      </div>
-      <footer class="basket__footer">
-        <div class="basket__total">{{ totalCount }} шт.</div>
-        <div class="basket__price">{{ totalPrice }}</div>
-      </footer>
+        :id="id"
+        :name="name"
+        :item-price="+price"
+        :item-total="+total"
+        :value="+count"
+        @input="updateItem"
+        @remove="removeItem"
+      />
+      <basket-footer :total-count="+totalCount" :total-price="+totalPrice" />
     </div>
   </section>
 </template>
@@ -49,9 +28,12 @@
 import { mapGetters, mapMutations } from "vuex";
 import { GETTERS, MUTATIONS } from "../store";
 import { GETTERS as GOODS_GETTERS } from "../../goods/store/constants";
+import BasketFooter from "../components/BasketFooter";
+import BasketItem from "../components/BasketItem";
 
 export default {
   name: "BasketIndex",
+  components: { BasketItem, BasketFooter },
   data() {
     return {
       counters: {}
@@ -74,7 +56,10 @@ export default {
       });
     },
     totalCount() {
-      return this.items.reduce((result, { count }) => result + count, 0);
+      return this.items.reduce(
+        (result, { count }) => result + parseInt(count),
+        0
+      );
     },
     totalPrice() {
       return this.itemsWithData.reduce(
@@ -92,7 +77,7 @@ export default {
       const normalizeValue = +value;
       this.counters[id] = total > normalizeValue ? +normalizeValue : total;
     },
-    updateItem(goodId, total, count) {
+    updateItem({ goodId, total, count }) {
       this._updateItem({
         goodId,
         total,
