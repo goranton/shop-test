@@ -16,6 +16,10 @@ export function getStoreInstance({
   });
 }
 
+export function applyContextToStore(context) {
+  Vuex.Store.prototype.$context = context;
+}
+
 export function subscribeModule(store, prefix, subscribers = []) {
   if ("subscribe" in store) {
     subscribers.forEach(subscriber => {

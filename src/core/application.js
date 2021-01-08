@@ -5,9 +5,16 @@ import {
 import { getRouterInstance } from "./router";
 import Vue from "vue";
 import App from "../App";
-import { getStoreInstance, subscribeModule } from "./store";
+import {
+  applyContextToStore,
+  getStoreInstance,
+  subscribeModule
+} from "./store";
 import { DEVELOPMENT } from "../constants/environments";
-import messageBus from "./messageBus";
+
+export function applyContextToApplication(context) {
+  Object.assign(Vue.prototype, context);
+}
 
 /**
  * @callback onLoadCallback
@@ -29,6 +36,7 @@ import messageBus from "./messageBus";
  * @param {Object} storeConfig
  * @param modules
  * @param {String} environment
+ * @param context
  */
 export function initApplication({
   onLoad,
@@ -36,14 +44,16 @@ export function initApplication({
   routes = [],
   storeConfig = {},
   onError = console.error,
-  environment = process.env.NODE_ENV ?? DEVELOPMENT
+  environment = process.env.NODE_ENV ?? DEVELOPMENT,
+  context = {}
 }) {
-  Vue.prototype.$message = messageBus();
+  applyContextToApplication(context);
 
   const router = getRouterInstance();
   router.addRoutes([...routes, ...getRoutesStackForModules(modules)]);
 
   const store = getStoreInstance(storeConfig);
+  applyContextToStore(context);
 
   // wait until store modules loaded
   Promise.allSettled(getStoreConfigurationForModules(modules)).then(

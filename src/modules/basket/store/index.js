@@ -1,3 +1,6 @@
+import { successSkeleton, warningSkeleton } from "../../../core/messageBus";
+import persistState from "../../../store/helpers/persist";
+
 export const PREFIX = "[BASKET]";
 export const MUTATIONS = {
   PUSH: `${PREFIX} push to basket`,
@@ -9,8 +12,6 @@ export const MUTATIONS = {
 export const GETTERS = {
   GET_ITEMS: `${PREFIX} get items`
 };
-
-import persistState from "../../../store/helpers/persist";
 
 const persistStateSubscriber = persistState(Object.values(MUTATIONS), "basket");
 
@@ -81,8 +82,11 @@ export default {
       }
 
       const foundItem = findGoodById(goods, goodId);
+      // eslint-disable-next-line no-unused-vars
+      const [_, notify] = this.$context.$message;
 
       if (total < count + (foundItem ? foundItem.count : 0)) {
+        notify(warningSkeleton("Empty items"));
         return true;
       }
 
@@ -92,6 +96,8 @@ export default {
       } else {
         goods.push({ id: goodId, count });
       }
+
+      notify(successSkeleton("Push to basket"));
     },
     /**
      * Remove items from basket
