@@ -17,16 +17,10 @@ export default {
       return groupId === id && price > -1 && count > 0;
     });
   },
-  [GETTERS.GET_ITEMS_BY_ID]: state => (ids = [], cb) => {
+  [GETTERS.GET_ITEMS_BY_ID]: state => (ids = []) => {
     const { items = [] } = getLoadData(state.items, {});
-    const result = Array.isArray(ids)
+    return Array.isArray(ids)
       ? items.filter(({ id }) => ids.includes(id))
       : items.find(({ id }) => id === ids);
-
-    if (typeof cb === "function") {
-      return cb.apply(null, result);
-    }
-
-    return result;
   }
 };

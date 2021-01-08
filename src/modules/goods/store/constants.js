@@ -1,5 +1,9 @@
 export const PREFIX = "[GOODS]";
 
+export const PRICE_UP = "up";
+export const PRICE_DOWN = "down";
+export const PRICE_NORMAL = "normal";
+
 export const ACTIONS = {
   LOAD_ITEMS: `${PREFIX} load items`,
   SYNC_PROPERTIES: `${PREFIX} load names`

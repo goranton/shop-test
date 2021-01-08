@@ -1,11 +1,18 @@
 <template>
   <div class="good-inline">
     <div class="good-inline__title">{{ title }}</div>
-    <div class="good-inline__price">{{ price }}</div>
+    <div
+      class="good-inline__price"
+      :class="{ [`good-inline__price--${status}`]: true }"
+    >
+      {{ price }}
+    </div>
   </div>
 </template>
 
 <script>
+import { PRICE_DOWN, PRICE_NORMAL, PRICE_UP } from "../../store/constants";
+
 export default {
   props: {
     title: {
@@ -14,6 +21,12 @@ export default {
     },
     price: {
       type: Number,
+      required: true
+    },
+    status: {
+      type: String,
+      validator: status =>
+        [PRICE_NORMAL, PRICE_DOWN, PRICE_UP].includes(status),
       required: true
     }
   },
@@ -36,6 +49,15 @@ $background-color-hover: transparentize(white, 0.9);
 
   &:hover {
     background-color: $background-color-hover;
+  }
+
+  &__price {
+    &--up {
+      background-color: red;
+    }
+    &--down {
+      background-color: green;
+    }
   }
 }
 </style>

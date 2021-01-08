@@ -21,19 +21,17 @@ export function applyContextToStore(context) {
 }
 
 export function subscribeModule(store, prefix, subscribers = []) {
-  if ("subscribe" in store) {
-    subscribers.forEach(subscriber => {
-      const detectMutation = new RegExp(`^(${prefix})/`);
+  subscribers.forEach(subscriber => {
+    const detectMutation = new RegExp(`^(${prefix})/`);
 
-      store.subscribe((mutation, state) => {
-        const normalizeMutation = {
-          ...mutation,
-          type: mutation.type.slice(prefix.length + 1)
-        };
+    store.subscribe((mutation, state) => {
+      const normalizeMutation = {
+        ...mutation,
+        type: mutation.type.slice(prefix.length + 1)
+      };
 
-        detectMutation.test(mutation.type) &&
-          subscriber(normalizeMutation, state[prefix]);
-      });
+      detectMutation.test(mutation.type) &&
+        subscriber(normalizeMutation, state[prefix]);
     });
-  }
+  });
 }

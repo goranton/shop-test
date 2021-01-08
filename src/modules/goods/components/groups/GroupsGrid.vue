@@ -16,6 +16,7 @@
                   :key="item.id"
                   :title="item.name"
                   :price="item.price"
+                  :status="item.status"
                   @click.native="() => pushToBasket(item.id, item.count)"
                 />
               </goods-inline-list>

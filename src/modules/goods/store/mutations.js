@@ -1,4 +1,4 @@
-import { MUTATIONS } from "./constants";
+import { MUTATIONS, PRICE_DOWN, PRICE_NORMAL, PRICE_UP } from "./constants";
 import {
   getLoadData,
   loadFailed,
@@ -65,8 +65,6 @@ export default {
   [MUTATIONS.SYNC_PROPERTIES_SUCCESS]({ items }, { payload, rate }) {
     const { items: loadedItems = [] } = getLoadData(items);
 
-    console.log(loadedItems);
-
     Object.assign(items.data, {
       items: loadedItems.map(item => {
         const foundProperties = payload.find(({ T, G }) => {
@@ -78,11 +76,20 @@ export default {
         }
 
         const { C: itemPrice, P: itemCount } = foundProperties;
+        const calculatePrice = +itemPrice * rate;
+
+        let status =
+          item.price > -1 && item.price !== calculatePrice
+            ? item.price > calculatePrice
+              ? PRICE_DOWN
+              : PRICE_UP
+            : PRICE_NORMAL;
 
         return {
           ...item,
-          price: +itemPrice * rate,
-          count: itemCount
+          price: calculatePrice,
+          count: itemCount,
+          status
         };
       })
     });
