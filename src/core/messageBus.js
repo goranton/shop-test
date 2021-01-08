@@ -14,6 +14,15 @@ export function validateType(type) {
   return MESSAGE_TYPES.includes(type);
 }
 
+export function validateMessage(message) {
+  return (
+    "id" in message &&
+    "type" in message &&
+    MESSAGE_TYPES.includes(message.type) &&
+    "payload" in message
+  );
+}
+
 export function successSkeleton(payload) {
   return {
     type: SUCCESS,
@@ -42,7 +51,8 @@ export default () => {
 
   return [
     {
-      add: listener => validateListener(listener, listeners.push.bind(this)),
+      add: listener =>
+        validateListener(listener, () => listeners.push(listener)),
       remove: listener =>
         validateListener(listener, () => {
           const foundIndex = listeners.indexOf(listener);
