@@ -13,6 +13,7 @@ import { mapGetters, mapMutations } from "vuex";
 import { GETTERS } from "../store/constants";
 import GroupsGrid from "../components/groups/GroupsGrid";
 import { MUTATIONS } from "../../basket/store";
+import { successSkeleton } from "../../../core/messageBus";
 
 export default {
   name: "GoodsIndexPage",
@@ -26,6 +27,11 @@ export default {
       _pushToBasket: MUTATIONS.PUSH
     }),
     pushToBasket({ id, total }) {
+      // eslint-disable-next-line no-unused-vars
+      const [_, notify] = this.$message;
+
+      notify(successSkeleton("Push to basket!"));
+
       this._pushToBasket({
         goodId: id,
         count: 1,
