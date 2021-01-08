@@ -5,7 +5,7 @@ import {
 import { getRouterInstance } from "./router";
 import Vue from "vue";
 import App from "../App";
-import { getStoreInstance } from "./store";
+import { getStoreInstance, subscribeModule } from "./store";
 import { DEVELOPMENT } from "../constants/environments";
 import messageBus from "./messageBus";
 
@@ -50,7 +50,17 @@ export function initApplication({
     storeModules => {
       // register modules in store
       storeModules.forEach(({ value }) => {
-        const [name, structure] = value;
+        const [name, { subscribers, ...structure }] = value;
+
+        // subscribe to store events
+        if (Array.isArray(subscribers)) {
+          subscribeModule(
+            store,
+            name,
+            subscribers.filter(subscriber => typeof subscriber === "function")
+          );
+        }
+
         store.registerModule(name, structure);
       });
 

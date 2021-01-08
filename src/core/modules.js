@@ -52,12 +52,14 @@ export function getRoutesStackForModules(modules) {
 }
 
 export async function getStoreConfigurationForModule({ name, store }) {
+  const { default: module, PREFIX = name } = await store();
   return [
     name,
     {
       namespaced: true,
-      ...(await store())?.default
-    }
+      ...module
+    },
+    PREFIX
   ];
 }
 

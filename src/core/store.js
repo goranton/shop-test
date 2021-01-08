@@ -15,3 +15,17 @@ export function getStoreInstance({
     getters
   });
 }
+
+export function subscribeModule(store, prefix, subscribers = []) {
+  if ("subscribe" in store) {
+    subscribers.forEach(subscriber => {
+      const detectMutation = new RegExp(`^(${prefix})`);
+
+      store.subscribe(
+        (mutation, state) =>
+          detectMutation.test(mutation.type) &&
+          subscriber(mutation, state[prefix])
+      );
+    });
+  }
+}
