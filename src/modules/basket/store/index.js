@@ -3,7 +3,8 @@ export const MUTATIONS = {
   PUSH: `${PREFIX} push to basket`,
   REMOVE: `${PREFIX} remove from basket`,
   DECREMENT: `${PREFIX} decrement items`,
-  UPDATE: `${PREFIX} update items`
+  UPDATE: `${PREFIX} update items`,
+  RESTORE: `${PREFIX} restore state`
 };
 export const GETTERS = {
   GET_ITEMS: `${PREFIX} get items`
@@ -107,6 +108,9 @@ export default {
         goodCount - count <= 0
           ? removeGood(state.goods, goodId)
           : decrementGood(state.goods, { count, goodId });
+    },
+    [MUTATIONS.RESTORE](state) {
+      Object.assign(state, JSON.parse(localStorage.getItem("basket")));
     }
   },
   getters: {

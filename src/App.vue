@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <message-resolver />
     <router-view />
   </div>
 </template>
@@ -10,11 +9,19 @@
 </style>
 
 <script>
-import MessageResolver from "./modules/message/components/message-resolver";
+import { mapActions, mapMutations } from "vuex";
+import { MUTATIONS } from "./modules/basket/store";
+import { ACTIONS } from "./modules/goods/store/constants";
+
 export default {
   name: "Application",
-  components: { MessageResolver },
   methods: {
+    ...mapActions("goods", {
+      loadItems: ACTIONS.LOAD_ITEMS
+    }),
+    ...mapMutations("basket", {
+      restoreBasket: MUTATIONS.RESTORE
+    }),
     messageListener(payload) {
       console.log(payload);
     }
@@ -26,6 +33,10 @@ export default {
   beforeDestroy() {
     const [{ remove }] = this.$message;
     remove(this.messageListener);
+  },
+  async created() {
+    await this.loadItems();
+    this.restoreBasket();
   }
 };
 </script>
