@@ -1,7 +1,16 @@
 import { MUTATIONS } from "./constants";
-import { loadFailed, loadSuccess } from "../../../store/helpers/loadable";
+import {
+  getLoadData,
+  loadFailed,
+  loadSuccess
+} from "../../../store/helpers/loadable";
 
 export default {
+  /**
+   * Fetch and serialize items. Mark status as success
+   * @param state
+   * @param payload
+   */
   [MUTATIONS.LOAD_ITEMS_SUCCESS](state, payload) {
     Object.assign(state, {
       items: loadSuccess(
@@ -19,11 +28,11 @@ export default {
 
             // push group items to items stack
             groupItemsEntries.forEach(([itemId, { N: itemName }]) => {
-              // set default values for item
               items.push({
                 id: +itemId,
                 groupId: +groupId,
                 name: itemName,
+                // set default values for item
                 count: -1,
                 price: -1
               });
@@ -39,33 +48,44 @@ export default {
       )
     });
   },
+  /**
+   * Store error and mark as failed
+   * @param {Object} state
+   * @param {*} error - error instance
+   */
   [MUTATIONS.LOAD_ITEMS_FAILED](state, error) {
     Object.assign(state, { items: loadFailed(error) });
   },
-  [MUTATIONS.SYNC_PROPERTIES_SUCCESS]({ items }, payload) {
-    const loadedItems = items.data?.items;
+  /**
+   * Synchronize loaded items and properties
+   * @param items
+   * @param payload
+   * @param {Number} rate - currency rate
+   */
+  [MUTATIONS.SYNC_PROPERTIES_SUCCESS]({ items }, { payload, rate }) {
+    const { items: loadedItems = [] } = getLoadData(items);
 
-    if (loadedItems && loadedItems.length) {
-      Object.assign(items.data, {
-        items: [...loadedItems].map(item => {
-          const foundProperties = payload.find(({ T, G }) => {
-            return T === item.id && G === item.groupId;
-          });
+    console.log(loadedItems);
 
-          if (!foundProperties) {
-            return item;
-          }
+    Object.assign(items.data, {
+      items: loadedItems.map(item => {
+        const foundProperties = payload.find(({ T, G }) => {
+          return T === item.id && G === item.groupId;
+        });
 
-          const { C: itemPrice, P: itemCount } = foundProperties;
+        if (!foundProperties) {
+          return item;
+        }
 
-          return {
-            ...item,
-            price: +itemPrice,
-            count: itemCount
-          };
-        })
-      });
-    }
+        const { C: itemPrice, P: itemCount } = foundProperties;
+
+        return {
+          ...item,
+          price: +itemPrice * rate,
+          count: itemCount
+        };
+      })
+    });
   },
   [MUTATIONS.SYNC_PROPERTIES_FAILED](state, error) {
     Object.assign(state, { items: loadFailed(error) });

@@ -6,7 +6,6 @@ export default {
   async [ACTIONS.LOAD_ITEMS](
     {
       commit,
-      dispatch,
       state: {
         items: { status }
       }
@@ -20,12 +19,11 @@ export default {
 
     try {
       commit(MUTATIONS.LOAD_ITEMS_SUCCESS, await goodsService.loadNames());
-      dispatch(ACTIONS.SYNC_PROPERTIES);
     } catch (e) {
       commit(MUTATIONS.LOAD_ITEMS_FAILED, e);
     }
   },
-  async [ACTIONS.SYNC_PROPERTIES]({ commit }) {
+  async [ACTIONS.SYNC_PROPERTIES]({ commit }, rate = 1) {
     try {
       const {
         Error: responseError,
@@ -37,7 +35,10 @@ export default {
         commit(MUTATIONS.SYNC_PROPERTIES_FAILED, responseError);
       }
 
-      commit(MUTATIONS.SYNC_PROPERTIES_SUCCESS, responsePayload);
+      commit(MUTATIONS.SYNC_PROPERTIES_SUCCESS, {
+        payload: responsePayload,
+        rate
+      });
     } catch (e) {
       commit(MUTATIONS.SYNC_PROPERTIES_FAILED, e);
     }

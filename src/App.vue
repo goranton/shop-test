@@ -1,5 +1,18 @@
 <template>
   <div class="app" id="app">
+    <div class="app__configuration">
+      <label for="rate">Rate delta</label>
+      <input type="text" v-model="rate" id="rate" />
+
+      <label for="period">Update period</label>
+      <input
+        type="text"
+        v-model="updateInterval"
+        id="period"
+        @change="initUpdater"
+      />
+    </div>
+
     <message-list class="app__messages" :messages="messages" />
     <router-view />
   </div>
@@ -57,12 +70,16 @@ export default {
   components: { MessageList },
   data() {
     return {
-      messages: []
+      messages: [],
+      rate: 1,
+      timer: null,
+      updateInterval: 15
     };
   },
   methods: {
     ...mapActions("goods", {
-      loadItems: ACTIONS.LOAD_ITEMS
+      loadItems: ACTIONS.LOAD_ITEMS,
+      syncProperties: ACTIONS.SYNC_PROPERTIES
     }),
     ...mapMutations("basket", {
       restoreBasket: MUTATIONS.RESTORE
@@ -80,18 +97,35 @@ export default {
     messageListener(message) {
       this.messages.push(message);
       this.applyMessageRemoveTimer(message.id);
+    },
+    initUpdater() {
+      if (this.timer) {
+        this.destroyUpdater();
+      }
+
+      this.timer = setInterval(() => {
+        this.syncProperties(this.rate);
+      }, this.updateInterval * 1000);
+    },
+    destroyUpdater() {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
     }
   },
   mounted() {
     const [{ add }] = this.$message;
     add(this.messageListener);
+    this.initUpdater();
   },
   beforeDestroy() {
     const [{ remove }] = this.$message;
     remove(this.messageListener);
+    this.destroyUpdater();
   },
   async created() {
     await this.loadItems();
+    await this.syncProperties(this.rate);
     this.restoreBasket();
   }
 };
